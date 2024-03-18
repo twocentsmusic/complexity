@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Ah the complexity the complexity!</title>
+    <script src="jspsych/jspsych.js"></script>
+    <script src="jspsych/jspsychsheet.js"></script>
+    <script src="jspsych/plugin-survey-text.js"></script>
+    <script src="jspsych/plugin-html-keyboard-response.js"></script>
+    <script src="jspsych/plugin-html-button-response.js"></script>
+    <script src="jspsych/plugin-survey-likert.js"></script>
+    <link href="jspsych/jspsych.css" rel="stylesheet" type="text/css" />
+    <link href="jspsych/jspsychsheet.css" rel="stylesheet" type="text/css" />
+
+    <!-- jQuery -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+    <style>
+        .jspsych-display-element {
+            font-size: 24px;
+        }
+    </style>
+</head>
+  <body></body>
+  <script>
+
+var jsPsych = initJsPsych({
+        show_progress_bar: true,
+        on_finish: function () {
+        url = "https://script.google.com/macros/s/AKfycbzcbnomQ8JcCuTm92xcgnuJ4-TyzOiP6j9PYpMmg3t3Ng71GXZX5nAmS6g1KXZR2pqr/exec";
+        jsPsychSheet.uploadData(url, jsPsych.data.get().csv())
+        }
+    });
+
+    var timeline = [];
+
+    var idInputTrial = {
+            type: jsPsychSurveyText,
+            questions: [
+                {prompt: 'Participant ID:', placeholder: '099', required: true},
+            ]
+    };
+    timeline.push(idInputTrial);
+
+    var welcome = {
+        type: jsPsychHtmlButtonResponse,
+            stimulus: `
+            <p>Welcome to the experiment.</p>
+            <p>In this study, we want to learn about your preference for complexity in music.</p>
+            `,
+            choices:['Continue to instructions']
+    };
+    timeline.push(welcome);
+
+    var instructions1 = {
+        type: jsPsychHtmlButtonResponse,
+        stimulus: `
+        <p>You will listen to four excerpts of music.</br>
+        After that, you will be presented with one excerpt at a time and you will have to rate it on how much you like it and how complex it sounds to you.</br>
+        Do this by clicking on the button that best reflects what you think.</br>
+        Please judge each composition relative to the others rather than compare each to an absolute standard.</p>
+        `,
+        choices:['Begin experiment']
+    };
+    timeline.push(instructions1);
+
+    var trial1 = {
+        type: jsPsychHtmlButtonResponse,
+        stimulus: `
+        <p>Excerpt 1</p>
+        `,
+        choices:['Rate']
+    };
+
+    var trial2 = {
+        type: jsPsychHtmlButtonResponse,
+        stimulus: `
+        <p>Excerpt 2</p>
+        `,
+        choices:['Rate']
+    };
+
+    var trial3 = {
+        type: jsPsychHtmlButtonResponse,
+        stimulus: `
+        <p>Excerpt 3</p>
+        `,
+        choices:['Rate']
+    };
+
+    var trial4 = {
+        type: jsPsychHtmlButtonResponse,
+        stimulus: `
+        <p>Excerpt 4</p>
+        `,
+        choices:['Rate']
+    };
+
+    var liking = {
+        type: jsPsychSurveyLikert,
+        questions: [
+            {
+            prompt: "How much do you <strong>like</strong> it?", 
+            scale_width: 700,
+            labels: [
+                "1 - Dislike a lot", 
+                "2", 
+                "3 - Dislike", 
+                "4", 
+                "5 - Dislike a little",
+                "6",
+                "7 - Neutral",
+                "8",
+                "9 - Like a little",
+                "10",
+                "11 - Like",
+                "12",
+                "13 - Like a lot"
+            ],
+            required: true
+            }
+        ]
+    };
+
+    var complexity = {
+        type: jsPsychSurveyLikert,
+        questions: [
+            {
+            prompt: "How complex does it sound to you?", 
+            scale_width: 700,
+            labels: [
+                "1 - Extremely simple", 
+                "2", 
+                "3 - Simple", 
+                "4", 
+                "5 - Somewhat simple",
+                "6",
+                "7 - Neutral",
+                "8",
+                "9 - Somewhat complex",
+                "10",
+                "11 - Complex",
+                "12",
+                "13 - Extremely complex"
+            ],
+            required: true
+            }
+        ]
+    };
+
+    timeline.push(trial1, liking, complexity);
+    timeline.push(trial2, liking, complexity);
+    timeline.push(trial3, liking, complexity);
+    timeline.push(trial4, liking, complexity);
+
+    var end = {
+        type: jsPsychHtmlButtonResponse,
+        stimulus: `
+        <p>You've come to the end of the experiment.</p>
+        <p>Thank you for participating.</p>
+        <p>You've contributed to science!</p>
+        <p>Woohoo!</p>
+        `,
+        choices:['End experiment and upload my data'],
+        on_finish: function(data) {
+            document.body.innerHTML += '<p>Please wait for your data to finish uploading before closing the browser window.</p>';
+        },
+    };
+    timeline.push(end);
+
+    var all_data = jsPsych.data.get();
+    console.log(all_data.csv());
+
+    jsPsych.run(timeline);
+
+  </script>
+</html>
